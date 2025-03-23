@@ -1,0 +1,91 @@
+/* Basic styling for the entire app */
+.App {
+  font-family: 'Roboto', 'Arial', sans-serif;
+  color: #e0e6ff;
+  background-color: #0a1128;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(20, 40, 80, 0.8) 0%, transparent 40%),
+    radial-gradient(circle at 10% 20%, rgba(30, 60, 120, 0.8) 0%, transparent 40%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style for the main title */
+h1 {
+  color: #7aa2f7;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(122, 162, 247, 0.5);
+  letter-spacing: 2px;
+}
+
+/* Style for the container */
+.container {
+  max-width: 800px;
+  padding: 20px;
+  background-color: rgba(13, 25, 48, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(122, 162, 247, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+/* Style for the buttons */
+.btn-primary {
+  background-color: #3d59a1;
+  border-color: #3d59a1;
+  box-shadow: 0 0 10px rgba(61, 89, 161, 0.5);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #4e6cb3;
+  border-color: #4e6cb3;
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(61, 89, 161, 0.7);
+}
+
+.btn-success {
+  background-color: #2c7a7b;
+  border-color: #2c7a7b;
+  box-shadow: 0 0 10px rgba(44, 122, 123, 0.5);
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #38a89d;
+  border-color: #38a89d;
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(44, 122, 123, 0.7);
+}
+
+p, h5 {
+  color: #cbd5e0;
+}
+
+img {
+  border: 2px solid rgba(122, 162, 247, 0.3);
+  box-shadow: 0 0 20px rgba(122, 162, 247, 0.2);
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.3; }
+}
+
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background-color: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite;
+}
+
+.star:nth-child(odd) {
+  animation-delay: 1.5s;
+  animation-duration: 4s;
+}
