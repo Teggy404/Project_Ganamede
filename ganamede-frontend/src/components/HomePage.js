@@ -80,14 +80,6 @@ const HomePage = () => {
         //Here you would typically send the file to your backend
         //for now, we'll just Log a message
         console.log('Image Submitted:', selectedFile.name);
-        
-        //In a real application you might use FormData to send the file to your server
-        // const formData = new FormData();
-        // formData.append('image', selectedFile);
-        // fetch('http://yout-backend-url/api/upload', {
-        //      method: 'POST',
-        //      body: formData,
-        //  })
     };
 
     //The component's UI
