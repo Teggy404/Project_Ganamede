@@ -1,64 +1,19 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import {Container, Button, Form} from 'react-bootstrap';
+import AWS from 'aws-sdk';
 
 const HomePage = () => {
-    // State to store the selected image file
-    // useState is react Hook that lets you add state to a functional component
-    // Initially, no image is selected, so we set it to null
+    //React hooks
     const [selectedFile, setSelectedFile] = useState(null);
-
-    //state to store the preview URL of the selected image
-    //This will be used to display a preview of the image
     const [previewUrl, setPreviewUrl] = useState(null);
-    
-    //create a ref for the file input
     const fileInputRef = useRef(null);
 
-    //create stars in the background
-    useEffect(() => {
-        const createStars = () => {
-            const app = document.querySelector('.App');
-            const starCount = 100;
-
-            //clear new stars
-            const existingStars = document.querySelectorAll('.star');
-            existingStars.forEach(star => star.remove());
-
-            for (let i = 0; i < starCount; i++){
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.width = `${Math.random() * 3}px`;
-                star.style.height = star.style.width;
-                star.style.animationDelay = `${Math.random() * 3}s`;
-                app.appendChild(star);
-            }
-        };
-
-        createStars();
-
-        //Clean up stars when component unmounts
-        return () => {
-            const stars = document.querySelectorAll('.star');
-            stars.forEach(star => star.remove());
-        };
-    }, []);
-
-    //This funciton is called when the user selects an image file
+    //Function to handle file change
     const handleFileChange = (event) => {
-        //Get the selected file from the input element
         const file = event.target.files[0];
-
         if(file){
-            //store the file in the state
             setSelectedFile(file)
-
-            //create a URL for the file to use a preview
-            //URL.createobjectURL create a temporary URL that points to the file 
             setPreviewUrl(URL.createObjectURL(file));
-
-            //log information about the file to the console
             console.log('File selected:', file.name);
             console.log('File type:', file.type);
             console.log('File size:', file.size, 'bytes');
@@ -67,27 +22,43 @@ const HomePage = () => {
 
     //This function handles submit whenever the user clicks the submit button
     const handleSubmit = (event) => {
-        //prevent the default form submission behaviour
-        //This stops the page from refreshing
         event.preventDefault();
-
-        //if no file is selected, show an alert
         if(!selectedFile){
             alert('Please select and image first!');
             return;
         }
 
-        //Here you would typically send the file to your backend
-        //for now, we'll just Log a message
-        console.log('Image Submitted:', selectedFile.name);
         
-        //In a real application you might use FormData to send the file to your server
-        // const formData = new FormData();
-        // formData.append('image', selectedFile);
-        // fetch('http://yout-backend-url/api/upload', {
-        //      method: 'POST',
-        //      body: formData,
-        //  })
+        // S3 upload implementation
+        // Configure AWS SDK
+        AWS.config.update({
+            region: process.env.REACT_APP_AWS_REGION,
+            credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID
+            })
+        });
+        
+        // Create S3 service object
+        const s3 = new AWS.S3();
+        
+        // Prepare the parameters for S3 upload
+        const params = {
+            Bucket: process.env.REACT_APP_S3_BUCKET_NAME,
+            Key: `uploads/${Date.now()}-${selectedFile.name}`, // Use timestamp to make filename unique
+            Body: selectedFile,
+            ContentType: selectedFile.type
+        };
+        
+        // Upload file to S3
+        s3.upload(params, (err, data) => {
+            if (err) {
+                console.error("Error uploading to S3:", err);
+                alert("Upload failed!");
+            } else {
+                console.log("Successfully uploaded to S3:", data.Location);
+                alert("Upload successful!");
+            }
+        });
     };
 
     //The component's UI
